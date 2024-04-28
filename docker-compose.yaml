@@ -1,0 +1,290 @@
+# @format
+
+# docker-compose.yaml
+# postgres
+# pgadmin
+
+version: "3.8"
+networks:
+    appointMe-net:
+        name: appointMe-net
+        driver: bridge
+
+volumes:
+    postgres:
+    mailhog:
+    redis-stack:
+    rabbitmq_data:
+    kong_data:
+
+services:
+    auth:
+        build:
+            context: ./services/auth
+            dockerfile: Dockerfile
+        # command: npx prisma migrate dev --name init
+        image: auth
+        container_name: auth_container
+        restart: on-failure
+        ports:
+            - "4000:4000"
+        environment:
+            DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/auth?schema=public"
+            MODE: development
+            AUTH_SERVICE_URL: http://auth:4000
+            LOGIN_HISTORY_SERVICE_URL: http://login_history:4001
+            PATIENT_SERVICE_URL: http://patient:4002
+            DOCTOR_SERVICE_URL: http://doctor:4003
+            MAIL_SERVICE_URL: http://mail:4006
+        depends_on:
+            - postgres
+        volumes:
+            - ./services/auth:/app
+        networks:
+            - appointMe-net
+    login_history:
+        build:
+            context: ./services/login_history
+            dockerfile: Dockerfile
+        image: login_history
+        container_name: login_history_container
+        restart: on-failure
+        ports:
+            - "4001:4001"
+        environment:
+            DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/history?schema=public"
+            MODE: development
+            AUTH_SERVICE_URL: http://auth:4000
+            LOGIN_HISTORY_SERVICE_URL: http://login_history:4001
+        depends_on:
+            - postgres
+        volumes:
+            - ./services/login_history:/app
+        networks:
+            - appointMe-net
+
+    patient:
+        build:
+            context: ./services/patient
+            dockerfile: Dockerfile
+        # command: npx prisma migrate dev --name init
+        image: patient
+        container_name: patient_container
+        restart: on-failure
+        ports:
+            - "4002:4002"
+        environment:
+            DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/patient?schema=public"
+            MODE: development
+            AUTH_SERVICE_URL: http://auth:4000
+            LOGIN_HISTORY_SERVICE_URL: http://login_history:4001
+            PATIENT_SERVICE_URL: http://patient:4002
+            DOCTOR_SERVICE_URL: http://doctor:4003
+            APPOINTMENT_SERVICE_URL: http://appointment:4004
+            MAIL_SERVICE_URL: http://mail:4006
+        depends_on:
+            - postgres
+        volumes:
+            - ./services/patient:/app
+        networks:
+            - appointMe-net
+    doctor:
+        build:
+            context: ./services/doctor
+            dockerfile: Dockerfile
+        # command: npx prisma migrate dev --name init
+        image: doctor
+        container_name: doctor_container
+        restart: on-failure
+        ports:
+            - "4003:4003"
+        environment:
+            DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/doctor?schema=public"
+            MODE: development
+            AUTH_SERVICE_URL: http://auth:4000
+            LOGIN_HISTORY_SERVICE_URL: http://login_history:4001
+            PATIENT_SERVICE_URL: http://patient:4002
+            DOCTOR_SERVICE_URL: http://doctor:4003
+            APPOINTMENT_SERVICE_URL: http://appointment:4004
+            MAIL_SERVICE_URL: http://mail:4006
+
+            REDIS_HOST: redis-stack
+            REDIS_PORT: 6379
+        depends_on:
+            - postgres
+        volumes:
+            - ./services/doctor:/app
+        networks:
+            - appointMe-net
+    appointment:
+        build:
+            context: ./services/appointment
+            dockerfile: Dockerfile
+        image: appointment
+        container_name: appointment_container
+        restart: on-failure
+        ports:
+            - "4004:4004"
+        environment:
+            DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/appointment?schema=public"
+            MODE: development
+            AUTH_SERVICE_URL: http://auth:4000
+            PATIENT_SERVICE_URL: http://patient:4002
+            DOCTOR_SERVICE_URL: http://doctor:4003
+            APPOINTMENT_SERVICE_URL: http://appointment:4004
+            MAIL_SERVICE_URL: http://mail:4006
+        depends_on:
+            - postgres
+        volumes:
+            - ./services/appointment:/app
+        networks:
+            - appointMe-net
+    payment:
+        build:
+            context: ./services/payment
+            dockerfile: Dockerfile
+        image: payment
+        container_name: payment_container
+        restart: on-failure
+        ports:
+            - "4005:4005"
+        environment:
+            DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/payment?schema=public"
+            MODE: development
+            AUTH_SERVICE_URL: http://auth:4000
+            APPOINTMENT_SERVICE_URL: http://appointment:4004
+            MAIL_SERVICE_URL: http://mail:4006
+
+            SMTP_HOST: mailhog
+            SMTP_PORT: 1025
+        depends_on:
+            - postgres
+        volumes:
+            - ./services/payment:/app
+        networks:
+            - appointMe-net
+    email:
+        build:
+            context: ./services/email
+            dockerfile: Dockerfile
+        # command: npx prisma migrate dev --name init
+        image: email
+        container_name: email_container
+        restart: on-failure
+        ports:
+            - "4006:4006"
+        environment:
+            DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/email?schema=public"
+            MODE: development
+            AUTH_SERVICE_URL: http://auth:4000
+            LOGIN_HISTORY_SERVICE_URL: http://login_history:4001
+            PATIENT_SERVICE_URL: http://patient:4002
+            DOCTOR_SERVICE_URL: http://doctor:4003
+            APPOINTMENT_SERVICE_URL: http://appointment:4004
+            MAIL_SERVICE_URL: http://mail:4006
+
+            SMTP_HOST: mailhog
+            SMTP_PORT: 1025
+        depends_on:
+            - postgres
+        volumes:
+            - ./services/email:/app
+        networks:
+            - appointMe-net
+
+    api-gateway:
+        build:
+            context: ./api-gateway
+            dockerfile: Dockerfile
+        # command: npx prisma migrate dev --name init
+        image: api_gateway
+        container_name: api_gateway_container
+        restart: on-failure
+        environment:
+            AUTH_SERVICE_URL: http://auth:4000
+            LOGIN_HISTORY_SERVICE_URL: http://login_history:4001
+            PATIENT_SERVICE_URL: http://patient:4002
+            DOCTOR_SERVICE_URL: http://doctor:4003
+            APPOINTMENT_SERVICE_URL: http://appointment:4004
+            PAYMENT_SERVICE_URL: http://payment:4005
+            MAIL_SERVICE_URL: http://mail:4006
+        ports:
+            - "8080:8080"
+        volumes:
+            - ./api-gateway:/app
+        networks:
+            - appointMe-net
+
+    postgres:
+        image: postgres:13
+        container_name: postgres
+        restart: on-failure
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: postgres
+        ports:
+            - "5433:5432"
+        volumes:
+            - postgres:/var/lib/postgresql:13/data
+        healthcheck:
+            test: ["CMD", "pg_isready", "-U"] #"auth"
+            interval: 30s
+            timeout: 30s
+            retries: 3
+        networks:
+            - appointMe-net
+
+    pgadmin:
+        image: dpage/pgadmin4
+        container_name: pgadmin
+        restart: on-failure
+        environment:
+            PGADMIN_DEFAULT_EMAIL: admin@example.com
+            PGADMIN_DEFAULT_PASSWORD: admin
+        ports:
+            - "5050:80"
+            - "5051:443"
+        networks:
+            - appointMe-net
+
+    mailhog:
+        image: mailhog/mailhog
+        container_name: mailhog
+        ports:
+            - "1025:1025"
+            - "8025:8025"
+        volumes:
+            - mailhog:/var/lib/mailhog
+        networks:
+            - appointMe-net
+
+    redis-stack:
+        image: redis/redis-stack:latest
+        container_name: redis-stack
+        ports:
+            - "6380:6379"
+            - "8002:8001"
+        volumes:
+            - redis-stack:/var/lib/redis-stack
+        environment:
+            - REDIS_ARGS=--save 900 1
+        networks:
+            - appointMe-net
+
+    rabbitmq:
+        image: rabbitmq:3.8-management
+        ports:
+            - "5672:5672" # RabbitMQ main port
+            - "15672:15672" # RabbitMQ management UI port
+        volumes:
+            - rabbitmq_data:/var/lib/rabbitmq
+        networks:
+            - appointMe-net
+        healthcheck:
+            test: ["CMD", "rabbitmqctl", "status"]
+            interval: 30s
+            timeout: 30s
+            retries: 3
+
+    # ------------------------------------------
