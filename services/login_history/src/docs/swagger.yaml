@@ -1,0 +1,401 @@
+# @format
+
+openapi: 3.0.0
+info:
+    version: 1.0.0
+    title: "Login History Service"
+    description: "Login History Service enables to create and manage Login history of Users"
+    contact:
+        name: Fs army
+        url: http://anchor.com
+        email: support@anchor.com
+
+servers:
+    # Added by API Auto Mocking Plugin
+    # - description: SwaggerHub API Auto Mocking
+    #   url: https://virtserver.swaggerhub.com/Al-Habib18/anchor_api/1.0.0
+    - description: dev server
+      url: http://localhost:4001
+
+tags:
+    - name: Login History
+      description: Login History Endpoints (private)
+
+paths:
+    /login-histories:
+        post:
+            tags: [Login History]
+            description: create a new login History
+            requestBody:
+                content:
+                    "application/json":
+                        schema:
+                            type: object
+                            properties:
+                                user_id:
+                                    type: string
+                                    example: ksf12kdfh23kd23
+                                user_agent:
+                                    type: string
+                                    example: postman
+                                ip_address:
+                                    type: string
+                                    example: 162.152.0.1
+                                attemp:
+                                    type: string
+                                    enum: [success, failed]
+                                    default: success
+                            required: [user_id, user_agent, ip_address, attemp]
+            responses:
+                "201":
+                    description: login History creation successful
+                    content:
+                        "application/json":
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: login History creation successful
+                                    data:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: string
+                                                example: as23sdfksdh34hs
+                                            user_id:
+                                                type: string
+                                                example: as2ksdfl23s2ksd
+                                            user_agent:
+                                                type: string
+                                                example: postman
+                                            ip_address:
+                                                type: string
+                                                example: 242.232.2.2
+                                            attempt:
+                                                type: string
+                                                example: success
+                                            created_at:
+                                                type: string
+                                                format: date-time
+                                    links:
+                                        type: object
+                                        properties:
+                                            verify-email:
+                                                type: string
+                                                example: "/verify-email"
+                "400":
+                    $ref: "#/components/responses/400"
+                "500":
+                    $ref: "#/components/responses/500"
+        get:
+            description: Retrive a list of login history
+            tags: [Login History]
+            parameters:
+                - $ref: "#/components/parameters/pageParam"
+                - $ref: "#/components/parameters/limitParam"
+                - $ref: "#/components/parameters/sortByparam"
+            responses:
+                "200":
+                    description: Get a list of login history
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        type: array
+                                        items:
+                                            allOf:
+                                                - type: object
+                                                  properties:
+                                                      id:
+                                                          type: string
+                                                          example: 1df2sdfsdf3
+                                                      name:
+                                                          type: string
+                                                          example: al-habib
+                                                      email:
+                                                          type: string
+                                                          format: email
+                                                          example: habib@gmail.com
+                                                      role:
+                                                          type: string
+                                                          example: "customer"
+
+                                                      account:
+                                                          type: string
+                                                          example: 013306169
+
+                                                - $ref: "#/components/schemas/Timestamp"
+                                    pagination:
+                                        $ref: "#/components/schemas/Pagination"
+                                    links:
+                                        type: object
+                                        properties:
+                                            self:
+                                                type: string
+                                                format: url
+                                                example: /users?page=2&limit=5
+                                            next:
+                                                type: string
+                                                format: url
+                                                example: /users?page=3&limit=5
+                                            prev:
+                                                type: string
+                                                format: url
+                                                example: /users?page=1&limit=5
+                "400":
+                    $ref: "#/components/responses/400"
+                "401":
+                    $ref: "#/components/responses/401"
+                "500":
+                    $ref: "#/components/responses/500"
+    /login-histories/{id}:
+        get:
+            tags: [Login History]
+            description: retrive login History by id
+            parameters:
+                - $ref: "#/components/parameters/idPathParam"
+            responses:
+                "200":
+                    description: login History retrive successful
+                    content:
+                        "application/json":
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: login History retrive successful
+                                    data:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: string
+                                                example: as23sdfksdh34hs
+                                            user_id:
+                                                type: string
+                                                example: as2ksdfl23s2ksd
+                                            user_agent:
+                                                type: string
+                                                example: postman
+                                            ip_address:
+                                                type: string
+                                                example: 242.232.2.2
+                                            attempt:
+                                                type: string
+                                                example: success
+                                            created_at:
+                                                type: string
+                                                format: date-time
+                "400":
+                    $ref: "#/components/responses/400"
+                "500":
+                    $ref: "#/components/responses/500"
+    /login-histories/users/{user_id}:
+        get:
+            tags: [Login History]
+            description: retrive login History by user id
+            parameters:
+                - $ref: "#/components/parameters/userIdPathParam"
+                - $ref: "#/components/parameters/pageParam"
+                - $ref: "#/components/parameters/limitParam"
+                - $ref: "#/components/parameters/sortByparam"
+
+            responses:
+                "200":
+                    description: login history retrive successful
+                    content:
+                        "application/json":
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: login history retrive  successful
+                                    data:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: string
+                                                example: as23sdfksdh34hs
+                                            user_id:
+                                                type: string
+                                                example: as2ksdfl23s2ksd
+                                            user_agent:
+                                                type: string
+                                                example: postman
+                                            ip_address:
+                                                type: string
+                                                example: 242.232.2.2
+                                            attempt:
+                                                type: string
+                                                example: success
+                                            created_at:
+                                                type: string
+                                                format: date-time
+                "400":
+                    $ref: "#/components/responses/400"
+                "500":
+                    $ref: "#/components/responses/500"
+
+components:
+    schemas:
+        Timestamp:
+            type: object
+            properties:
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
+            required: [createdAt, updatedAt]
+        Pagination:
+            type: object
+            properties:
+                page:
+                    type: integer
+                    format: int32
+                    example: 2
+                limit:
+                    type: integer
+                    format: int32
+                    example: 10
+
+                next:
+                    type: integer
+                    format: int32
+                    example: 3
+                prev:
+                    type: integer
+                    format: int32
+                    example: 3
+                totalPage:
+                    type: integer
+                    format: int32
+                    example: 5
+                totalItems:
+                    type: integer
+                    format: int32
+                    example: 400
+            required:
+                - page
+                - limit
+                - totalPage
+                - totalItems
+
+    responses:
+        "400":
+            description: "bad request"
+            content:
+                "application/json":
+                    schema:
+                        type: object
+                        properties:
+                            code:
+                                type: integer
+                                format: int32
+                                example: 400
+                            error:
+                                type: string
+                                example: Bad request
+                            data:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        field:
+                                            type: string
+                                            example: email
+                                        message:
+                                            type: string
+                                            example: invalid credntials
+                                        in:
+                                            type: string
+                                            enum: [query, body]
+                                            example: body
+        "401":
+            description: unauthorized
+            content:
+                "application/json":
+                    schema:
+                        type: object
+                        properties:
+                            code:
+                                type: integer
+                                format: int32
+                                example: 401
+                            error:
+                                type: string
+                                example: unauthorized
+                            message:
+                                type: string
+                                example: You don't have the right permission
+
+        "500":
+            description: Internal Server Error
+            content:
+                "application/json":
+                    schema:
+                        type: object
+                        properties:
+                            code:
+                                type: integer
+                                format: int32
+                                example: 500
+                            error:
+                                type: string
+                                example: internale server Error
+                            message:
+                                type: string
+                                example: We are sorry for the inconvenience. Please try again later
+    parameters:
+        pageParam:
+            in: query
+            name: page
+            description: current page number
+            schema:
+                type: integer
+                format: int32
+                example: 3
+        limitParam:
+            in: query
+            name: limit
+            description: maximum items to be returned
+            schema:
+                type: integer
+                format: int32
+                example: 10
+        sortByparam:
+            in: query
+            name: sort-type
+            description: type of sort (asc or dsc)
+            schema:
+                type: string
+                example: updatedAt
+        sortTypeParam:
+            in: query
+            name: sort_type
+            description: type of sort (asc or dsc)
+            schema:
+                type: string
+                enum: [asc, dsc]
+                example: dsc
+        idPathParam:
+            in: path
+            name: id
+            required: true
+            description: item id
+            schema:
+                type: string
+                example: kdsf12ksdf32sdf232
+        userIdPathParam:
+            in: path
+            name: user_id
+            required: true
+            description: user id
+            schema:
+                type: string
+                example: ksdf12sd12kl12lq
