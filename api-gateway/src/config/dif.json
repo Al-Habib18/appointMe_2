@@ -1,0 +1,253 @@
+{
+    "services": {
+        "auth": {
+            "url": "http://localhost:4000",
+            "name": "auth",
+            "routes": [
+                {
+                    "path": "/register",
+                    "methods": ["post"],
+                    "middlewares": [],
+                    "roles": []
+                },
+                {
+                    "path": "/login",
+                    "methods": ["post"],
+                    "middlewares": [],
+                    "roles": []
+                },
+                {
+                    "path": "/verify-email",
+                    "methods": ["post"],
+                    "middlewares": [],
+                    "roles": []
+                },
+                {
+                    "path": "/verify-token",
+                    "methods": ["post"],
+                    "middlewares": [],
+                    "roles": []
+                },
+                {
+                    "path": "/logout",
+                    "methods": ["post"],
+                    "middlewares": [],
+                    "roles": ["ADMIN", "DOCTOR", "PATIENT"]
+                },
+                {
+                    "path": "/refresh",
+                    "methods": ["post"],
+                    "middlewares": [],
+                    "roles": []
+                }
+            ]
+        },
+        "login-history": {
+            "url": "http://localhost:4001",
+            "name": "login_history",
+            "routes": [
+                {
+                    "path": "/login-histories",
+                    "methods": ["get"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/login-histories",
+                    "methods": ["post"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/login-histories/:id",
+                    "methods": ["get"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/login-histories/users/:id",
+                    "methods": ["get"],
+                    "middlewares": ["auth"]
+                }
+            ]
+        },
+        "patient": {
+            "url": "http://localhost:4002",
+            "name": "patient",
+            "routes": [
+                {
+                    "path": "/patients",
+                    "methods": ["get"],
+                    "middlewares": ["auth"],
+                    "roles": ["ADMIN"]
+                },
+                {
+                    "path": "/patients",
+                    "methods": ["post"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/patients/:id",
+                    "methods": ["get"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/patients/:id",
+                    "methods": ["put"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/patients/:id",
+                    "methods": ["delete"],
+                    "middlewares": ["auth"]
+                }
+            ]
+        },
+        "doctor": {
+            "url": "http://localhost:4003",
+            "name": "doctor",
+            "routes": [
+                {
+                    "path": "/doctors",
+                    "methods": ["get"],
+                    "middlewares": []
+                },
+                {
+                    "path": "/doctors",
+                    "methods": ["post"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/doctors/:id",
+                    "methods": ["get"],
+                    "middlewares": []
+                },
+                {
+                    "path": "/doctors/:id",
+                    "methods": ["put"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/doctors/:id",
+                    "methods": ["delete"],
+                    "middlewares": ["auth"]
+                }
+            ]
+        },
+        "appointment": {
+            "url": "http://localhost:4004",
+            "name": "appointment",
+            "routes": [
+                {
+                    "path": "/appointments",
+                    "methods": ["get"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/appointments",
+                    "methods": ["post"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/appointments/:id",
+                    "methods": ["get"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/appointments/:id",
+                    "methods": ["put"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/appointments/:id",
+                    "methods": ["delete"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/appointments/doctors/:id",
+                    "methods": ["get"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/appointments/patients/:id",
+                    "methods": ["get"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/appointments/upcomming/patients/:id",
+                    "methods": ["get"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/appointments/upcomming/doctors/:id",
+                    "methods": ["get"],
+                    "middlewares": ["auth"]
+                }
+            ]
+        },
+        "payment": {
+            "url": "http://localhost:4005",
+            "name": "payment",
+            "routes": [
+                {
+                    "path": "/payments",
+                    "methods": ["get"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/payments",
+                    "methods": ["post"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/payments/:id",
+                    "methods": ["get"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/payments/:id",
+                    "methods": ["delete"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/payments/appointments/:id",
+                    "methods": ["get"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/payments/success/:id",
+                    "methods": ["post"],
+                    "middlewares": []
+                },
+                {
+                    "path": "/payments/fail/:id",
+                    "methods": ["post"],
+                    "middlewares": []
+                }
+            ]
+        },
+        "email": {
+            "url": "http://localhost:4006",
+            "name": "payment",
+            "routes": [
+                {
+                    "path": "/emails",
+                    "methods": ["post"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/emails",
+                    "methods": ["get"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/emails/:id",
+                    "methods": ["get"],
+                    "middlewares": ["auth"]
+                },
+                {
+                    "path": "/emails/:id",
+                    "methods": ["delete"],
+                    "middlewares": ["auth"]
+                }
+            ]
+        }
+    }
+}
