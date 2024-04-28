@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum LoginAttempt {
+  SUCCESS
+  FAILED
+}
+model History {
+  id            String      @id @default(cuid())
+  auth_user_id  String 
+  ip_address    String
+  user_agent    String
+  attempt        LoginAttempt @default(SUCCESS)
+  loginAt       DateTime     @default(now())
+}
