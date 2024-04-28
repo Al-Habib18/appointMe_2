@@ -1,0 +1,406 @@
+# @format
+
+openapi: 3.0.0
+info:
+    version: 1.0.0
+    title: "email Service"
+    description: "email Service enables to create and manage email"
+servers:
+    # Added by API Auto Mocking Plugin
+    # - description: SwaggerHub API Auto Mocking
+    #   url: https://virtserver.swaggerhub.com/Al-Habib18/anchor_api/1.0.0
+    - description: dev server
+      url: http://localhost:4006
+
+tags:
+    - name: email
+      description: email service Endpoints
+
+paths:
+    /emails:
+        post:
+            tags: [email]
+            description: create a new email
+            requestBody:
+                content:
+                    "application/json":
+                        schema:
+                            type: object
+                            properties:
+                                sender:
+                                    type: string
+                                    format: eamil
+                                    example: raisul@gamil.com
+                                recipient:
+                                    type: string
+                                    format: email
+                                    example: ashik@gamil.com
+                                subject:
+                                    type: string
+                                    example: your email subject
+                                body:
+                                    type: string
+                                    example: your email body
+                                source:
+                                    type: string
+                                    example: email verification
+                            required: [recipient, subject, body, source]
+            responses:
+                "201":
+                    description: email creation successful
+                    content:
+                        "application/json":
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: email creation successful
+                                    data:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: string
+                                                example: ksf12kdfh23kd23
+                                            sender:
+                                                type: string
+                                                format: eamil
+                                                example: raisul@gamil.com
+                                            recipient:
+                                                type: string
+                                                format: email
+                                                example: ashik@gamil.com
+                                            subject:
+                                                type: string
+                                                example: your email subject
+                                            body:
+                                                type: string
+                                                example: your email body
+                                            source:
+                                                type: string
+                                                example: email verification
+                                            status:
+                                                type: string
+                                                example: succeded
+                                            created_at:
+                                                type: string
+                                                format: date-time
+                "400":
+                    $ref: "#/components/responses/400"
+                "500":
+                    $ref: "#/components/responses/500"
+        get:
+            description: Retrive a list of emails
+            tags: [email]
+            parameters:
+                - $ref: "#/components/parameters/pageParam"
+                - $ref: "#/components/parameters/limitParam"
+                - $ref: "#/components/parameters/sortByparam"
+            responses:
+                "200":
+                    description: Get a list of email
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        type: array
+                                        items:
+                                            allOf:
+                                                - type: object
+                                                  properties:
+                                                      id:
+                                                          type: string
+                                                          example: ksf12kdfh23kd23
+                                                      sender:
+                                                          type: string
+                                                          format: eamil
+                                                          example: raisul@gamil.com
+                                                      recipient:
+                                                          type: string
+                                                          format: email
+                                                          example: ashik@gamil.com
+                                                      subject:
+                                                          type: string
+                                                          example: your email subject
+                                                      body:
+                                                          type: string
+                                                          example: your email body
+                                                      source:
+                                                          type: string
+                                                          example: email verification
+                                                      status:
+                                                          type: string
+                                                          example: succeded
+
+                                                - $ref: "#/components/schemas/Timestamp"
+                                    pagination:
+                                        $ref: "#/components/schemas/Pagination"
+                                    links:
+                                        type: object
+                                        properties:
+                                            self:
+                                                type: string
+                                                format: url
+                                                example: /emails?page=2&limit=5
+                                            next:
+                                                type: string
+                                                format: url
+                                                example: /emails?page=3&limit=5
+                                            prev:
+                                                type: string
+                                                format: url
+                                                example: /emails?page=1&limit=5
+                "400":
+                    $ref: "#/components/responses/400"
+                "401":
+                    $ref: "#/components/responses/401"
+                "500":
+                    $ref: "#/components/responses/500"
+
+    /emails/{id}:
+        get:
+            tags: [email]
+            description: Retrive a single email by id
+            parameters:
+                - $ref: "#/components/parameters/idPathParam"
+            responses:
+                "200":
+                    description: email retrive  successful
+                    content:
+                        "application/json":
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: email retrive  successful
+                                    data:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: string
+                                                example: ksf12kdfh23kd23
+                                            sender:
+                                                type: string
+                                                format: eamil
+                                                example: raisul@gamil.com
+                                            recipient:
+                                                type: string
+                                                format: email
+                                                example: ashik@gamil.com
+                                            subject:
+                                                type: string
+                                                example: your email subject
+                                            body:
+                                                type: string
+                                                example: your email body
+                                            source:
+                                                type: string
+                                                example: email verification
+                                            status:
+                                                type: string
+                                                example: succeded
+                                            created_at:
+                                                type: string
+                                                format: date-time
+                                            updated_at:
+                                                type: string
+                                                format: date-time
+
+                                    links:
+                                        type: object
+                                        properties:
+                                            patient:
+                                                type: string
+                                                example: /patient/:id
+                                            doctor:
+                                                type: string
+                                                example: /doctor/:id
+
+                "400":
+                    $ref: "#/components/responses/400"
+                "500":
+                    $ref: "#/components/responses/500"
+
+        delete:
+            tags: [email]
+            description: delete a single email by id
+            parameters:
+                - $ref: "#/components/parameters/idPathParam"
+            responses:
+                "204":
+                    description: email deleted  successfully
+                "400":
+                    $ref: "#/components/responses/400"
+                "500":
+                    $ref: "#/components/responses/500"
+
+components:
+    schemas:
+        Timestamp:
+            type: object
+            properties:
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
+            required: [createdAt, updatedAt]
+        Pagination:
+            type: object
+            properties:
+                page:
+                    type: integer
+                    format: int32
+                    example: 2
+                limit:
+                    type: integer
+                    format: int32
+                    example: 10
+
+                next:
+                    type: integer
+                    format: int32
+                    example: 3
+                prev:
+                    type: integer
+                    format: int32
+                    example: 3
+                totalPage:
+                    type: integer
+                    format: int32
+                    example: 5
+                totalItems:
+                    type: integer
+                    format: int32
+                    example: 400
+            required:
+                - page
+                - limit
+                - totalPage
+                - totalItems
+
+    responses:
+        "400":
+            description: "bad request"
+            content:
+                "application/json":
+                    schema:
+                        type: object
+                        properties:
+                            code:
+                                type: integer
+                                format: int32
+                                example: 400
+                            error:
+                                type: string
+                                example: Bad request
+                            data:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        field:
+                                            type: string
+                                            example: email
+                                        message:
+                                            type: string
+                                            example: invalid credntials
+                                        in:
+                                            type: string
+                                            enum: [query, body]
+                                            example: body
+        "401":
+            description: unauthorized
+            content:
+                "application/json":
+                    schema:
+                        type: object
+                        properties:
+                            code:
+                                type: integer
+                                format: int32
+                                example: 401
+                            error:
+                                type: string
+                                example: unauthorized
+                            message:
+                                type: string
+                                example: You don't have the right permission
+
+        "500":
+            description: Internal Server Error
+            content:
+                "application/json":
+                    schema:
+                        type: object
+                        properties:
+                            code:
+                                type: integer
+                                format: int32
+                                example: 500
+                            error:
+                                type: string
+                                example: internale server Error
+                            message:
+                                type: string
+                                example: We are sorry for the inconvenience. Please try again later
+    parameters:
+        pageParam:
+            in: query
+            name: page
+            description: current page number
+            schema:
+                type: integer
+                format: int32
+                example: 3
+        limitParam:
+            in: query
+            name: limit
+            description: maximum items to be returned
+            schema:
+                type: integer
+                format: int32
+                example: 10
+        sortByparam:
+            in: query
+            name: sort-type
+            description: type of sort (asc or dsc)
+            schema:
+                type: string
+                example: updatedAt
+        sortTypeParam:
+            in: query
+            name: sort_type
+            description: type of sort (asc or dsc)
+            schema:
+                type: string
+                enum: [asc, dsc]
+                example: dsc
+        idPathParam:
+            in: path
+            name: id
+            required: true
+            description: email id
+            schema:
+                type: string
+                example: kdsf12ksdf32sdf232
+        doctorIdPathParam:
+            in: path
+            name: doctor_id
+            required: true
+            description: doctor id
+            schema:
+                type: string
+                example: ksdf12sd12kl12lq
+        patientIdPathParam:
+            in: path
+            name: patient_id
+            required: true
+            description: patient id
+            schema:
+                type: string
+                example: ksdf12sd12kl12lq
