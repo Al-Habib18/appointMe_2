@@ -1,0 +1,1033 @@
+# @format
+
+openapi: 3.0.0
+info:
+    version: 1.0.0
+    title: "Appointment Service"
+    description: "Appointment Service enables to create and manage Appointment"
+servers:
+    # Added by API Auto Mocking Plugin
+    # - description: SwaggerHub API Auto Mocking
+    #   url: https://virtserver.swaggerhub.com/Al-Habib18/anchor_api/1.0.0
+    - description: dev server
+      url: http://localhost:4004
+
+tags:
+    - name: appointment
+      description: appointment service Endpoints
+
+paths:
+    /appointments:
+        post:
+            tags: [appointment]
+            description: create a new appointment
+            requestBody:
+                content:
+                    "application/json":
+                        schema:
+                            type: object
+                            properties:
+                                patient_id:
+                                    type: string
+                                    example: ksf12kdfh23kd23
+                                patient_email:
+                                    type: string
+                                    format: email
+                                    example: ashik@gmail.com
+                                doctor_id:
+                                    type: string
+                                    example: ksf12kdfh23kd23
+                                doctor_email:
+                                    type: string
+                                    format: email
+                                    example: raisul@gamil.com
+                                fee:
+                                    type: number
+                                    example: 500
+                                appointment_type:
+                                    type: string
+                                    enum:
+                                        [
+                                            consultation,
+                                            follo-up,
+                                            prenatal,
+                                            postpartum,
+                                        ]
+                                appointment_date:
+                                    type: string
+                                    format: date-time
+                                payment_method:
+                                    type: string
+                                    enum: [cash, mobile_banking]
+                                    default: mobile_banking
+                            required:
+                                [
+                                    patient_id,
+                                    doctor_id,
+                                    fee,
+                                    appointment_type,
+                                    appointment_date,
+                                    payment_method,
+                                ]
+            responses:
+                "201":
+                    description: appointment creation successful
+                    content:
+                        "application/json":
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: appointment creation successful
+                                    data:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: string
+                                                example: ksf12kdfh23kd23
+                                            patient_id:
+                                                type: string
+                                                example: ksf12kdfh23kd23
+                                            patient_name:
+                                                type: string
+                                                example: Ashik Mondol
+                                            patient_email:
+                                                type: string
+                                                format: email
+                                                example: ashik@gmail.com
+                                            doctor_id:
+                                                type: string
+                                                example: ksf12kdfh23kd23
+                                            doctor_name:
+                                                type: string
+                                                example: Raisul Islam
+                                            doctor_email:
+                                                type: string
+                                                example: raisul@gamil.com
+                                            appointment_type:
+                                                type: string
+                                                example: consultation
+                                            appointment_status:
+                                                type: string
+                                                example: pending
+                                            appointment_date:
+                                                type: string
+                                                format: date-time
+                                            payment_method:
+                                                type: string
+                                                example: mobile_banking
+                                            payment_status:
+                                                type: string
+                                                example: pending
+                                            location:
+                                                type: string
+                                                example: Update Health Care, Rangpur
+
+                                            created_at:
+                                                type: string
+                                                format: date-time
+                "400":
+                    $ref: "#/components/responses/400"
+                "500":
+                    $ref: "#/components/responses/500"
+        get:
+            description: Retrive a list of appointments
+            tags: [appointment]
+            parameters:
+                - $ref: "#/components/parameters/pageParam"
+                - $ref: "#/components/parameters/limitParam"
+                - $ref: "#/components/parameters/sortByparam"
+            responses:
+                "200":
+                    description: Get a list of appointment
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        type: array
+                                        items:
+                                            allOf:
+                                                - type: object
+                                                  properties:
+                                                      id:
+                                                          type: string
+                                                          example: ksf12kdfh23kd23
+                                                      patient_id:
+                                                          type: string
+                                                          example: ksf12kdfh23kd23
+                                                      patient_name:
+                                                          type: string
+                                                          example: Ashik Mondol
+                                                      patient_email:
+                                                          type: string
+                                                          format: email
+                                                          example: ashik@gmail.com
+                                                      doctor_id:
+                                                          type: string
+                                                          example: ksf12kdfh23kd23
+                                                      doctor_name:
+                                                          type: string
+                                                          example: Raisul Islam
+                                                      doctor_email:
+                                                          type: string
+                                                          example: raisul@gamil.com
+                                                      appointment_type:
+                                                          type: string
+                                                          example: consultation
+                                                      appointment_status:
+                                                          type: string
+                                                          example: pending
+                                                      appointment_date:
+                                                          type: string
+                                                          format: date-time
+                                                      payment_method:
+                                                          type: string
+                                                          example: mobile_banking
+                                                      payment_status:
+                                                          type: string
+                                                          example: pending
+                                                      location:
+                                                          type: string
+                                                          example: Update Health Care, Rangpur
+
+                                                - $ref: "#/components/schemas/Timestamp"
+                                    pagination:
+                                        $ref: "#/components/schemas/Pagination"
+                                    links:
+                                        type: object
+                                        properties:
+                                            self:
+                                                type: string
+                                                format: url
+                                                example: /appointments?page=2&limit=5
+                                            next:
+                                                type: string
+                                                format: url
+                                                example: /appointments?page=3&limit=5
+                                            prev:
+                                                type: string
+                                                format: url
+                                                example: /appointments?page=1&limit=5
+                "400":
+                    $ref: "#/components/responses/400"
+                "401":
+                    $ref: "#/components/responses/401"
+                "500":
+                    $ref: "#/components/responses/500"
+        delete:
+            tags:
+                - "appointment"
+            responses:
+                "400":
+                    $ref: "#/components/responses/400"
+                "401":
+                    $ref: "#/components/responses/401"
+                "500":
+                    $ref: "#/components/responses/500"
+
+    /appointments/{id}:
+        get:
+            tags: [appointment]
+            description: Retrive a single appointment by id
+            parameters:
+                - $ref: "#/components/parameters/idPathParam"
+            responses:
+                "200":
+                    description: appointment retrive  successful
+                    content:
+                        "application/json":
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: appointment retrive  successful
+                                    data:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: string
+                                                example: ksf12kdfh23kd23
+                                            patient_id:
+                                                type: string
+                                                example: ksf12kdfh23kd23
+                                            patient_name:
+                                                type: string
+                                                example: Ashik Mondol
+                                            patient_email:
+                                                type: string
+                                                format: email
+                                                example: ashik@gmail.com
+                                            doctor_id:
+                                                type: string
+                                                example: ksf12kdfh23kd23
+                                            doctor_name:
+                                                type: string
+                                                example: Raisul Islam
+                                            doctor_email:
+                                                type: string
+                                                example: raisul@gamil.com
+                                            appointment_type:
+                                                type: string
+                                                example: consultation
+                                            appointment_status:
+                                                type: string
+                                                example: pending
+                                            appointment_date:
+                                                type: string
+                                                format: date-time
+                                            payment_method:
+                                                type: string
+                                                example: mobile_banking
+                                            payment_status:
+                                                type: string
+                                                example: pending
+                                            location:
+                                                type: string
+                                                example: Update Health Care, Rangpur
+
+                                            created_at:
+                                                type: string
+                                                format: date-time
+                                            updated_at:
+                                                type: string
+                                                format: date-time
+
+                                    links:
+                                        type: object
+                                        properties:
+                                            patient:
+                                                type: string
+                                                example: /patient/:id
+                                            doctor:
+                                                type: string
+                                                example: /doctor/:id
+
+                "400":
+                    $ref: "#/components/responses/400"
+                "500":
+                    $ref: "#/components/responses/500"
+        put:
+            tags: [appointment]
+            description: Update a single appointment by id
+            parameters:
+                - $ref: "#/components/parameters/idPathParam"
+            requestBody:
+                content:
+                    "application/json":
+                        schema:
+                            type: object
+                            properties:
+                                appointment_type:
+                                    type: string
+                                    enum:
+                                        - consultation
+                                        - follo-up
+                                        - prenatal
+                                        - postpartum
+                                    default: consultation
+                                appointment_date:
+                                    type: string
+                                    format: date-time
+                                payment_method:
+                                    type: string
+                                    enum:
+                                        - hand_cash
+                                        - mobile_banking
+                                        - online_banking
+                                payment_status:
+                                    type: string
+                                    enum:
+                                        - true
+                                        - false
+            responses:
+                "200":
+                    description: update successful
+                    content:
+                        "application/json":
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: appointment update successful
+                                    data:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: string
+                                                example: ksf12kdfh23kd23
+                                            patient_id:
+                                                type: string
+                                                example: ksf12kdfh23kd23
+                                            patient_name:
+                                                type: string
+                                                example: Ashik Mondol
+                                            patient_email:
+                                                type: string
+                                                format: email
+                                                example: ashik@gmail.com
+                                            doctor_id:
+                                                type: string
+                                                example: ksf12kdfh23kd23
+                                            doctor_name:
+                                                type: string
+                                                example: Raisul Islam
+                                            doctor_email:
+                                                type: string
+                                                example: raisul@gamil.com
+                                            appointment_type:
+                                                type: string
+                                                example: consultation
+                                            appointment_status:
+                                                type: string
+                                                example: pending
+                                            appointment_date:
+                                                type: string
+                                                format: date-time
+                                            payment_method:
+                                                type: string
+                                                example: mobile_banking
+                                            payment_status:
+                                                type: string
+                                                example: pending
+                                            location:
+                                                type: string
+                                                example: Update Health Care, Rangpur
+
+                                            created_at:
+                                                type: string
+                                                format: date-time
+                                            updated_at:
+                                                type: string
+                                                format: date-time
+
+                "400":
+                    $ref: "#/components/responses/400"
+                "500":
+                    $ref: "#/components/responses/500"
+        delete:
+            tags: [appointment]
+            description: delete a single appointment by id
+            parameters:
+                - $ref: "#/components/parameters/idPathParam"
+            responses:
+                "204":
+                    description: appointment deleted  successfully
+                "400":
+                    $ref: "#/components/responses/400"
+                "500":
+                    $ref: "#/components/responses/500"
+
+    /appointments/{id}/status:
+        put:
+            tags: [appointment]
+            description: Update a single appointment by id
+            parameters:
+                - $ref: "#/components/parameters/idPathParam"
+            requestBody:
+                content:
+                    "application/json":
+                        schema:
+                            type: object
+                            properties:
+                                appointment_status:
+                                    type: string
+                                    enum:
+                                        - pending
+                                        - cancelled
+                                        - confirmed
+                                        - completed
+                                    default: confirmed
+
+            responses:
+                "200":
+                    description: update successful
+                    content:
+                        "application/json":
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: appointment update successful
+                                    data:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: string
+                                                example: ksf12kdfh23kd23
+                                            patient_id:
+                                                type: string
+                                                example: ksf12kdfh23kd23
+                                            patient_name:
+                                                type: string
+                                                example: Ashik Mondol
+                                            patient_email:
+                                                type: string
+                                                format: email
+                                                example: ashik@gmail.com
+                                            doctor_id:
+                                                type: string
+                                                example: ksf12kdfh23kd23
+                                            doctor_name:
+                                                type: string
+                                                example: Raisul Islam
+                                            doctor_email:
+                                                type: string
+                                                example: raisul@gamil.com
+                                            appointment_type:
+                                                type: string
+                                                example: consultation
+                                            appointment_status:
+                                                type: string
+                                                example: pending
+                                            appointment_date:
+                                                type: string
+                                                format: date-time
+                                            payment_method:
+                                                type: string
+                                                example: mobile_banking
+                                            payment_status:
+                                                type: string
+                                                example: pending
+                                            location:
+                                                type: string
+                                                example: Update Health Care, Rangpur
+
+                                            created_at:
+                                                type: string
+                                                format: date-time
+                                            updated_at:
+                                                type: string
+                                                format: date-time
+
+                "400":
+                    $ref: "#/components/responses/400"
+                "500":
+                    $ref: "#/components/responses/500"
+
+    /appointments/patients/{id}:
+        get:
+            description: Retrive a list of appointments of a patient
+            tags: [appointment]
+            parameters:
+                - $ref: "#/components/parameters/patientIdPathParam"
+                - $ref: "#/components/parameters/pageParam"
+                - $ref: "#/components/parameters/limitParam"
+                - $ref: "#/components/parameters/sortByparam"
+            responses:
+                "200":
+                    description: Get a list of appointment
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        type: array
+                                        items:
+                                            allOf:
+                                                - type: object
+                                                  properties:
+                                                      id:
+                                                          type: string
+                                                          example: ksf12kdfh23kd23
+                                                      patient_id:
+                                                          type: string
+                                                          example: ksf12kdfh23kd23
+                                                      patient_name:
+                                                          type: string
+                                                          example: Ashik Mondol
+                                                      patient_email:
+                                                          type: string
+                                                          format: email
+                                                          example: ashik@gmail.com
+                                                      doctor_id:
+                                                          type: string
+                                                          example: ksf12kdfh23kd23
+                                                      doctor_name:
+                                                          type: string
+                                                          example: Raisul Islam
+                                                      doctor_email:
+                                                          type: string
+                                                          example: raisul@gamil.com
+                                                      appointment_type:
+                                                          type: string
+                                                          example: consultation
+                                                      appointment_status:
+                                                          type: string
+                                                          example: pending
+                                                      appointment_date:
+                                                          type: string
+                                                          format: date-time
+                                                      payment_method:
+                                                          type: string
+                                                          example: mobile_banking
+                                                      payment_status:
+                                                          type: string
+                                                          example: pending
+                                                      location:
+                                                          type: string
+                                                          example: Update Health Care, Rangpur
+
+                                                - $ref: "#/components/schemas/Timestamp"
+                                    pagination:
+                                        $ref: "#/components/schemas/Pagination"
+                                    links:
+                                        type: object
+                                        properties:
+                                            self:
+                                                type: string
+                                                format: url
+                                                example: /appointments/:doctor_id?page=2&limit=5
+                                            next:
+                                                type: string
+                                                format: url
+                                                example: /appointments/:doctor_id?page=3&limit=5
+                                            prev:
+                                                type: string
+                                                format: url
+                                                example: /appointments/:doctor_id?page=1&limit=5
+                "400":
+                    $ref: "#/components/responses/400"
+                "401":
+                    $ref: "#/components/responses/401"
+                "500":
+                    $ref: "#/components/responses/500"
+    /appointments/doctors/{id}:
+        get:
+            description: Retrive a list of appointments of a doctor
+            tags: [appointment]
+            parameters:
+                - $ref: "#/components/parameters/doctorIdPathParam"
+                - $ref: "#/components/parameters/pageParam"
+                - $ref: "#/components/parameters/limitParam"
+                - $ref: "#/components/parameters/sortByparam"
+            responses:
+                "200":
+                    description: Get a list of appointment
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        type: array
+                                        items:
+                                            allOf:
+                                                - type: object
+                                                  properties:
+                                                      id:
+                                                          type: string
+                                                          example: ksf12kdfh23kd23
+                                                      patient_id:
+                                                          type: string
+                                                          example: ksf12kdfh23kd23
+                                                      patient_name:
+                                                          type: string
+                                                          example: Ashik Mondol
+                                                      patient_email:
+                                                          type: string
+                                                          format: email
+                                                          example: ashik@gmail.com
+                                                      doctor_id:
+                                                          type: string
+                                                          example: ksf12kdfh23kd23
+                                                      doctor_name:
+                                                          type: string
+                                                          example: Raisul Islam
+                                                      doctor_email:
+                                                          type: string
+                                                          example: raisul@gamil.com
+                                                      appointment_type:
+                                                          type: string
+                                                          example: consultation
+                                                      appointment_status:
+                                                          type: string
+                                                          example: pending
+                                                      appointment_date:
+                                                          type: string
+                                                          format: date-time
+                                                      payment_method:
+                                                          type: string
+                                                          example: mobile_banking
+                                                      payment_status:
+                                                          type: string
+                                                          example: pending
+                                                      location:
+                                                          type: string
+                                                          example: Update Health Care, Rangpur
+                                                - $ref: "#/components/schemas/Timestamp"
+                                    pagination:
+                                        $ref: "#/components/schemas/Pagination"
+                                    links:
+                                        type: object
+                                        properties:
+                                            self:
+                                                type: string
+                                                format: url
+                                                example: /appointments/:doctor_id?page=2&limit=5
+                                            next:
+                                                type: string
+                                                format: url
+                                                example: /appointments/:doctor_id?page=3&limit=5
+                                            prev:
+                                                type: string
+                                                format: url
+                                                example: /appointments/:doctor_id?page=1&limit=5
+                "400":
+                    $ref: "#/components/responses/400"
+                "401":
+                    $ref: "#/components/responses/401"
+                "500":
+                    $ref: "#/components/responses/500"
+
+    /appintments/upcomming/patients/{patient_id}:
+        get:
+            description: Retrive a list of upcommint appointments of a patient
+            tags: [appointment]
+            parameters:
+                - $ref: "#/components/parameters/patientIdPathParam"
+                - $ref: "#/components/parameters/pageParam"
+                - $ref: "#/components/parameters/limitParam"
+                - $ref: "#/components/parameters/sortByparam"
+            responses:
+                "200":
+                    description: Get a list of appointment
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        type: array
+                                        items:
+                                            allOf:
+                                                - type: object
+                                                  properties:
+                                                      id:
+                                                          type: string
+                                                          example: ksf12kdfh23kd23
+                                                      patient_id:
+                                                          type: string
+                                                          example: ksf12kdfh23kd23
+                                                      patient_name:
+                                                          type: string
+                                                          example: Ashik Mondol
+                                                      patient_email:
+                                                          type: string
+                                                          format: email
+                                                          example: ashik@gmail.com
+                                                      doctor_id:
+                                                          type: string
+                                                          example: ksf12kdfh23kd23
+                                                      doctor_name:
+                                                          type: string
+                                                          example: Raisul Islam
+                                                      doctor_email:
+                                                          type: string
+                                                          example: raisul@gamil.com
+                                                      appointment_type:
+                                                          type: string
+                                                          example: consultation
+                                                      appointment_status:
+                                                          type: string
+                                                          example: pending
+                                                      appointment_date:
+                                                          type: string
+                                                          format: date-time
+                                                      payment_method:
+                                                          type: string
+                                                          example: mobile_banking
+                                                      payment_status:
+                                                          type: string
+                                                          example: pending
+                                                      location:
+                                                          type: string
+                                                          example: Update Health Care, Rangpur
+
+                                                - $ref: "#/components/schemas/Timestamp"
+                                    pagination:
+                                        $ref: "#/components/schemas/Pagination"
+                                    links:
+                                        type: object
+                                        properties:
+                                            self:
+                                                type: string
+                                                format: url
+                                                example: /appointments/:doctor_id?page=2&limit=5
+                                            next:
+                                                type: string
+                                                format: url
+                                                example: /appointments/:doctor_id?page=3&limit=5
+                                            prev:
+                                                type: string
+                                                format: url
+                                                example: /appointments/:doctor_id?page=1&limit=5
+                "400":
+                    $ref: "#/components/responses/400"
+                "401":
+                    $ref: "#/components/responses/401"
+                "500":
+                    $ref: "#/components/responses/500"
+
+    /appointments/upcomming/doctors/{doctor_id}:
+        get:
+            description: Retrive a list of appointments of a doctor
+            tags: [appointment]
+            parameters:
+                - $ref: "#/components/parameters/doctorIdPathParam"
+                - $ref: "#/components/parameters/pageParam"
+                - $ref: "#/components/parameters/limitParam"
+                - $ref: "#/components/parameters/sortByparam"
+            responses:
+                "200":
+                    description: Get a list of appointment upcomming
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        type: array
+                                        items:
+                                            allOf:
+                                                - type: object
+                                                  properties:
+                                                      id:
+                                                          type: string
+                                                          example: ksf12kdfh23kd23
+                                                      patient_id:
+                                                          type: string
+                                                          example: ksf12kdfh23kd23
+                                                      patient_name:
+                                                          type: string
+                                                          example: Ashik Mondol
+                                                      patient_email:
+                                                          type: string
+                                                          format: email
+                                                          example: ashik@gmail.com
+                                                      doctor_id:
+                                                          type: string
+                                                          example: ksf12kdfh23kd23
+                                                      doctor_name:
+                                                          type: string
+                                                          example: Raisul Islam
+                                                      doctor_email:
+                                                          type: string
+                                                          example: raisul@gamil.com
+                                                      appointment_type:
+                                                          type: string
+                                                          example: consultation
+                                                      appointment_status:
+                                                          type: string
+                                                          example: pending
+                                                      appointment_date:
+                                                          type: string
+                                                          format: date-time
+                                                      payment_method:
+                                                          type: string
+                                                          example: mobile_banking
+                                                      payment_status:
+                                                          type: string
+                                                          example: pending
+                                                      location:
+                                                          type: string
+                                                          example: Update Health Care, Rangpur
+
+                                                - $ref: "#/components/schemas/Timestamp"
+                                    pagination:
+                                        $ref: "#/components/schemas/Pagination"
+                                    links:
+                                        type: object
+                                        properties:
+                                            self:
+                                                type: string
+                                                format: url
+                                                example: /appointments/:doctor_id?page=2&limit=5
+                                            next:
+                                                type: string
+                                                format: url
+                                                example: /appointments/:doctor_id?page=3&limit=5
+                                            prev:
+                                                type: string
+                                                format: url
+                                                example: /appointments/:doctor_id?page=1&limit=5
+                "400":
+                    $ref: "#/components/responses/400"
+                "401":
+                    $ref: "#/components/responses/401"
+                "500":
+                    $ref: "#/components/responses/500"
+components:
+    schemas:
+        Timestamp:
+            type: object
+            properties:
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
+            required: [createdAt, updatedAt]
+        Pagination:
+            type: object
+            properties:
+                page:
+                    type: integer
+                    format: int32
+                    example: 2
+                limit:
+                    type: integer
+                    format: int32
+                    example: 10
+
+                next:
+                    type: integer
+                    format: int32
+                    example: 3
+                prev:
+                    type: integer
+                    format: int32
+                    example: 3
+                totalPage:
+                    type: integer
+                    format: int32
+                    example: 5
+                totalItems:
+                    type: integer
+                    format: int32
+                    example: 400
+            required:
+                - page
+                - limit
+                - totalPage
+                - totalItems
+
+    responses:
+        "400":
+            description: "bad request"
+            content:
+                "application/json":
+                    schema:
+                        type: object
+                        properties:
+                            code:
+                                type: integer
+                                format: int32
+                                example: 400
+                            error:
+                                type: string
+                                example: Bad request
+                            data:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        field:
+                                            type: string
+                                            example: email
+                                        message:
+                                            type: string
+                                            example: invalid credntials
+                                        in:
+                                            type: string
+                                            enum: [query, body]
+                                            example: body
+        "401":
+            description: unauthorized
+            content:
+                "application/json":
+                    schema:
+                        type: object
+                        properties:
+                            code:
+                                type: integer
+                                format: int32
+                                example: 401
+                            error:
+                                type: string
+                                example: unauthorized
+                            message:
+                                type: string
+                                example: You don't have the right permission
+
+        "500":
+            description: Internal Server Error
+            content:
+                "application/json":
+                    schema:
+                        type: object
+                        properties:
+                            code:
+                                type: integer
+                                format: int32
+                                example: 500
+                            error:
+                                type: string
+                                example: internale server Error
+                            message:
+                                type: string
+                                example: We are sorry for the inconvenience. Please try again later
+    parameters:
+        pageParam:
+            in: query
+            name: page
+            description: current page number
+            schema:
+                type: integer
+                format: int32
+                example: 3
+        limitParam:
+            in: query
+            name: limit
+            description: maximum items to be returned
+            schema:
+                type: integer
+                format: int32
+                example: 10
+        sortByparam:
+            in: query
+            name: sort-type
+            description: type of sort (asc or dsc)
+            schema:
+                type: string
+                enum: [asc, dsc]
+                default: asc
+        sortTypeParam:
+            in: query
+            name: sort_type
+            description: type of sort (asc or dsc)
+            schema:
+                type: string
+                enum: [asc, dsc]
+                example: dsc
+        idPathParam:
+            in: path
+            name: id
+            required: true
+            description: appointment id
+            schema:
+                type: string
+                example: kdsf12ksdf32sdf232
+        doctorIdPathParam:
+            in: path
+            name: doctor_id
+            required: true
+            description: doctor id
+            schema:
+                type: string
+                example: ksdf12sd12kl12lq
+        patientIdPathParam:
+            in: path
+            name: patient_id
+            required: true
+            description: patient id
+            schema:
+                type: string
+                example: ksdf12sd12kl12lq
