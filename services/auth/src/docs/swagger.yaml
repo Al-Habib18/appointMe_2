@@ -1,0 +1,452 @@
+# @format
+
+openapi: 3.0.0
+info:
+    version: 1.0.0
+    title: "Auth Service API"
+    description: "Anchor API Documentation"
+    contact:
+        name: Fs army
+        url: http://anchor.com
+        email: support@anchor.com
+
+servers:
+    - description: dev server
+      url: http://localhost:4000
+
+tags:
+    - name: Auth
+      description: Authenticaion Endpoints (public)
+
+paths:
+    /health:
+        get:
+            description: Health status Check
+            responses:
+                "201":
+                    description: application running
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: UP
+                "400":
+                    $ref: "#/components/responses/400"
+                "500":
+                    $ref: "#/components/responses/500"
+
+    /register:
+        post:
+            tags: [Auth]
+            description: create a new account
+            requestBody:
+                content:
+                    "application/json":
+                        schema:
+                            type: object
+                            properties:
+                                name:
+                                    type: string
+                                    example: al-habib
+                                email:
+                                    type: string
+                                    format: email
+                                    example: ah18bd@gmail.com
+                                password:
+                                    type: string
+                                    format: password
+                                    example: pass123
+                                role:
+                                    type: string
+                                    enum: [PATIENT, DOCTOR, ADMIN]
+                                    default: PATIENT
+                            required: [name, email, password]
+            responses:
+                "201":
+                    description: Registration successful
+                    content:
+                        "application/json":
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Registration successful
+                                    data:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: string
+                                                example: as23sdfksdh34hs
+                                            name:
+                                                type: string
+                                                example: al-habib
+                                            email:
+                                                type: string
+                                                example: ah18bd@gmail.com
+                                            role:
+                                                type: string
+                                                example: patient
+                                            verified:
+                                                type: string
+                                                example: fasle
+                                            status:
+                                                type: string
+                                                format: enum
+                                                example: pending
+                                            timestamp:
+                                                $ref: "#/components/schemas/Timestamp"
+                                    links:
+                                        type: object
+                                        properties:
+                                            verify-email:
+                                                type: string
+                                                example: "/verify-email"
+                "400":
+                    $ref: "#/components/responses/400"
+                "500":
+                    $ref: "#/components/responses/500"
+    /login:
+        post:
+            description: login to your account
+            tags: [Auth]
+            requestBody:
+                content:
+                    "application/json":
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    type: string
+                                    example: ah18bd@gmail.com
+                                password:
+                                    type: string
+                                    example: pass123
+                            required: [email, password]
+            responses:
+                "201":
+                    description: login successfull
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: login successful
+                                    data:
+                                        type: object
+                                        properties:
+                                            access_token:
+                                                type: string
+                                                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                                            refresh_token:
+                                                type: string
+                                                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                                    links:
+                                        type: object
+                                        properties:
+                                            profile:
+                                                type: string
+                                                example: /profile/me
+                "400":
+                    $ref: "#/components/responses/400"
+                "500":
+                    $ref: "#/components/responses/500"
+    /refresh:
+        post:
+            description: Retrive access token
+            tags: [Auth]
+            requestBody:
+                content:
+                    "application/josn":
+                        schema:
+                            type: object
+                            properties:
+                                refresh_token:
+                                    type: string
+                                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                            required: [refresh_token]
+            responses:
+                "201":
+                    description: Access token retrive successfull
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Access token retrive successfull
+                                    data:
+                                        type: object
+                                        properties:
+                                            access_token:
+                                                type: string
+                                                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+
+                                            refresh_token:
+                                                type: string
+                                                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                                    links:
+                                        type: object
+                                        properties:
+                                            profile:
+                                                type: string
+                                                example: /profile/me
+                "400":
+                    $ref: "#/components/responses/400"
+                "500":
+                    $ref: "#/components/responses/500"
+    /logout:
+        post:
+            description: logout from your account
+            tags: [Auth]
+            requestBody:
+                content:
+                    "application/json":
+                        schema:
+                            type: object
+                            properties:
+                                refreshToken:
+                                    type: string
+                                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                            required: [refreshToken]
+            responses:
+                "201":
+                    description: logout successfull
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: logout successfull
+                "400":
+                    $ref: "#/components/responses/400"
+                "500":
+                    $ref: "#/components/responses/500"
+    /verify-token:
+        post:
+            description: verify your email
+            tags: [Auth]
+            requestBody:
+                content:
+                    "application/josn":
+                        schema:
+                            type: object
+                            properties:
+                                token:
+                                    type: string
+                                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                            required: [token]
+            responses:
+                "201":
+                    description: token verification successfull
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: token verification successfull
+                "400":
+                    $ref: "#/components/responses/400"
+                "500":
+                    $ref: "#/components/responses/500"
+
+    /verify-email:
+        post:
+            description: verify your email
+            tags: [Auth]
+            requestBody:
+                content:
+                    "application/json":
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    type: string
+                                    format: email
+                                    example: ah18bd@gmail.com
+                                code:
+                                    type: string
+                                    example: pass123
+                            required: [email, code]
+            responses:
+                "201":
+                    description: verification successfull
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: verification successfull
+                "400":
+                    $ref: "#/components/responses/400"
+                "500":
+                    $ref: "#/components/responses/500"
+
+components:
+    securitySchemes:
+        berarerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
+
+    schemas:
+        Timestamp:
+            type: object
+            properties:
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
+            required: [createdAt, updatedAt]
+        Pagination:
+            type: object
+            properties:
+                page:
+                    type: integer
+                    format: int32
+                    example: 2
+                limit:
+                    type: integer
+                    format: int32
+                    example: 10
+
+                next:
+                    type: integer
+                    format: int32
+                    example: 3
+                prev:
+                    type: integer
+                    format: int32
+                    example: 3
+                totalPage:
+                    type: integer
+                    format: int32
+                    example: 5
+                totalItems:
+                    type: integer
+                    format: int32
+                    example: 400
+            required:
+                - page
+                - limit
+                - totalPage
+                - totalItems
+
+    responses:
+        "400":
+            description: "bad request"
+            content:
+                "application/json":
+                    schema:
+                        type: object
+                        properties:
+                            code:
+                                type: integer
+                                format: int32
+                                example: 400
+                            error:
+                                type: string
+                                example: Bad request
+                            data:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        field:
+                                            type: string
+                                            example: email
+                                        message:
+                                            type: string
+                                            example: invalid credntials
+                                        in:
+                                            type: string
+                                            enum: [query, body]
+                                            example: body
+        "401":
+            description: unauthorized
+            content:
+                "application/json":
+                    schema:
+                        type: object
+                        properties:
+                            code:
+                                type: integer
+                                format: int32
+                                example: 401
+                            error:
+                                type: string
+                                example: unauthorized
+                            message:
+                                type: string
+                                example: You don't have the right permission
+
+        "500":
+            description: Internal Server Error
+            content:
+                "application/json":
+                    schema:
+                        type: object
+                        properties:
+                            code:
+                                type: integer
+                                format: int32
+                                example: 500
+                            error:
+                                type: string
+                                example: internale server Error
+                            message:
+                                type: string
+                                example: We are sorry for the inconvenience. Please try again later
+    parameters:
+        pageParam:
+            in: query
+            name: page
+            description: current page number
+            schema:
+                type: integer
+                format: int32
+                example: 3
+        limitParam:
+            in: query
+            name: limit
+            description: maximum items to be returned
+            schema:
+                type: integer
+                format: int32
+                example: 10
+        sortByparam:
+            in: query
+            name: sort-type
+            description: type of sort (asc or dsc)
+            schema:
+                type: string
+                example: updatedAt
+        sortTypeParam:
+            in: query
+            name: sort_type
+            description: type of sort (asc or dsc)
+            schema:
+                type: string
+                enum: [asc, dsc]
+                example: dsc
+
+        searchParam:
+            in: query
+            name: search
+            description: search term
+            schema:
+                type: string
