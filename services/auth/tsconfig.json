@@ -1,0 +1,44 @@
+{
+    "compilerOptions": {
+        "rootDir": "./",
+        "outDir": "./dist",
+        "removeComments": true, // Disable emitting comments.
+        "noEmitOnError": true, // Disable emitting files if any type checking errors are reported.
+        "allowUnreachableCode": false, // Disable error reporting for unreachable code.
+        "useDefineForClassFields": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "strictNullChecks": true,
+        // "allowJs": true,
+        "target": "ESNext",
+        "module": "CommonJS",
+        "esModuleInterop": true,
+        "strict": true,
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "moduleResolution": "Node",
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "sourceMap": false,
+        "isolatedModules": false,
+        "baseUrl": "./",
+        "paths": {
+            "@middlewares/*": ["src/middlewares/*"],
+            "@lib/*": ["src/lib/*"],
+            "@controllers/*": ["src/controllers/*"],
+            "@routes/*": ["src/routes/*"],
+            "@schemas/*": ["src/schemas/*"],
+            "@utils/*": ["src/utils/*"],
+            "@db/*": ["src/db/*"],
+            "@app/*": ["src/app/*"],
+            "@config/*": ["config/*"]
+        }
+    },
+    "include": ["./src/**/*", "./config/**/*", "index.ts"],
+    "exclude": ["node_modules", "**/node_modules/*", "./test/**/*"]
+}
