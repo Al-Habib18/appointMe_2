@@ -1,0 +1,27 @@
+# @format
+
+name: Demon Action
+
+on:
+    push:
+        branches:
+            - "auth"
+
+jobs:
+    demo-job:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Run a one-line script
+              run: echo "Hello, world!"
+            - name: Run a multi-line script
+              run: |
+                  echo Add other actions to build,
+                  echo test, and deploy your project.
+            - name: List files
+              run: ls ${{github.workspace}}
+            - name: Print Githu context
+              env:
+                  GITHUB_CONTEXT: ${{ toJson(github) }}
+              run: echo "GITHUB_CONTEXT"
+            - name: Action Completed
+              run: echo "Action Completed"
