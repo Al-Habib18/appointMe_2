@@ -3,7 +3,7 @@
 on:
     push:
         branches:
-            - "auth"
+            - "auth-test"
 
 jobs:
     demo-job:
